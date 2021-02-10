@@ -44,7 +44,7 @@ public class SpringCodegen extends AbstractJavaCodegen
     protected boolean delegatePattern = false;
     protected boolean delegateMethod = false;
     protected boolean singleContentTypes = false;
-    protected boolean java8 = false;
+    protected boolean java8 = true;
     protected boolean async = false;
     protected String responseWrapper = "";
     protected boolean useTags = false;
@@ -568,14 +568,14 @@ public class SpringCodegen extends AbstractJavaCodegen
 
     @Override
     public Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs) {
-//        if(library.equals(SPRING_CLOUD_LIBRARY)) {
-//            List<CodegenSecurity> authMethods = (List<CodegenSecurity>) objs.get("authMethods");
-//            if (authMethods != null) {
-//                for (CodegenSecurity authMethod : authMethods) {
-//                    authMethod.name = camelize(sanitizeName(authMethod.name), true);
-//                }
-//            }
-//        }
+        if(library.equals(SPRING_CLOUD_LIBRARY)) {
+            List<CodegenSecurity> authMethods = (List<CodegenSecurity>) objs.get("authMethods");
+            if (authMethods != null) {
+                for (CodegenSecurity authMethod : authMethods) {
+                    authMethod.name = camelize(sanitizeName(authMethod.name), true);
+                }
+            }
+        }
         return objs;
     }
 

@@ -10,7 +10,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <swagger-core-version>1.5.24</swagger-core-version>
-        <openfeign.version>2.1.0.RELEASE</openfeign.version>
+        <openfeign-version>2.2.6.RELEASE</openfeign-version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -42,16 +42,8 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <version>${openfeign.version}</version>
+            <version>${openfeign-version}</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
         </dependency>
         {{#withXml}}
 

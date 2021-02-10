@@ -107,6 +107,14 @@
 <!--             <version>${jmockit-version}</version> -->
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-json -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-json</artifactId>
+            <version>5.5.8</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>

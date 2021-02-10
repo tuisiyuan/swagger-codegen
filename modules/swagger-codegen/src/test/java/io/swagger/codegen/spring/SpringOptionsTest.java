@@ -1,11 +1,16 @@
 package io.swagger.codegen.spring;
 
 import io.swagger.codegen.CodegenConfig;
+import io.swagger.codegen.DefaultCodegen;
+import io.swagger.codegen.InlineModelResolver;
 import io.swagger.codegen.java.JavaClientOptionsTest;
 import io.swagger.codegen.languages.SpringCodegen;
 import io.swagger.codegen.options.SpringOptionsProvider;
+import io.swagger.models.Swagger;
+import io.swagger.parser.SwaggerParser;
 import mockit.Expectations;
 import mockit.Tested;
+import org.junit.Test;
 
 public class SpringOptionsTest extends JavaClientOptionsTest {
 
@@ -83,5 +88,20 @@ public class SpringOptionsTest extends JavaClientOptionsTest {
             clientCodegen.setDefaultInterfaces(Boolean.valueOf(SpringOptionsProvider.DEFAULT_INTERFACES));
             times = 1;
         }};
+    }
+
+    @Test
+    public void test001() {
+        //final Swagger swagger = parseAndPrepareSwagger("src/test/resources/petStore.yaml");
+        final DefaultCodegen codegen = new DefaultCodegen();
+        codegen.setInputSpec("petStore.yaml");
+
+    }
+
+    private static Swagger parseAndPrepareSwagger(String path) {
+        Swagger swagger = new SwaggerParser().read(path);
+        // resolve inline models
+        new InlineModelResolver().flatten(swagger);
+        return swagger;
     }
 }

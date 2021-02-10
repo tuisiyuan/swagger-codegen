@@ -1,0 +1,7 @@
+lang: spring
+library: spring-cloud
+additionalProperties:
+  - "serializableModel=true"
+  - "withXml=true"
+spec: "D:\project\javaLearn\petStore.yaml"
+output: "D:\project\javaLearn\petStoreJavaSpringCloud"

@@ -1,5 +1,6 @@
 package io.swagger.codegen;
 
+import cn.hutool.json.JSONUtil;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
@@ -770,7 +771,22 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
 
         // resolve inline models
         InlineModelResolver inlineModelResolver = new InlineModelResolver();
+
+        //处理 配置文件spec中 paths 和 definitions
         inlineModelResolver.flatten(swagger);
+
+        //处理 config 中设置的 info-extensions
+        Object infoExtensions = config.additionalProperties().get("info-extensions");
+        if (infoExtensions != null) {
+            Map infoExtensionsMap = (Map) infoExtensions;
+            Object groupId = infoExtensionsMap.get("groupId");
+            Object artifactId = infoExtensionsMap.get("artifactId");
+
+            if (groupId != null && artifactId != null) {
+
+            }
+
+        }
 
         List<File> files = new ArrayList<File>();
         // models
