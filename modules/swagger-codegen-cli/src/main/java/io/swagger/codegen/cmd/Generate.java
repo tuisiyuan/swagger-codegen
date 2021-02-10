@@ -1,18 +1,25 @@
 package io.swagger.codegen.cmd;
 
+import cn.hutool.core.io.file.FileReader;
 import io.airlift.airline.Command;
 import io.airlift.airline.Option;
 import io.swagger.codegen.ClientOptInput;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.DefaultGenerator;
 import io.swagger.codegen.config.CodegenConfigurator;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import static io.swagger.codegen.config.CodegenConfiguratorUtils.*;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -181,6 +188,25 @@ public class Generate implements Runnable {
     @Override
     public void run() {
 
+        String yamlGroupId = null;
+        String yamlArtifactId = null;
+        String yamlVersion = null;
+
+        try {
+            File file = new File(spec);
+            FileInputStream fileInputStream = new FileInputStream(file);
+            Yaml yaml = new Yaml();
+            LinkedHashMap loadResult = (LinkedHashMap)yaml.load(fileInputStream);
+            LinkedHashMap infoHashMap = (LinkedHashMap) loadResult.get("info");
+
+            yamlGroupId = infoHashMap.get("groupId").toString();
+            yamlArtifactId = infoHashMap.get("artifactId").toString();
+            yamlVersion = infoHashMap.get("version").toString();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         // attempt to read from config file
         CodegenConfigurator configurator = CodegenConfigurator.fromFile(configFile);
 
@@ -281,6 +307,26 @@ public class Generate implements Runnable {
 
         if (skipAliasGeneration != null) {
             configurator.setSkipAliasGeneration(skipAliasGeneration);
+        }
+
+        //
+        if (StringUtils.isNotEmpty(yamlGroupId)) {
+            configurator.setGroupId(yamlGroupId);
+        }
+        if (StringUtils.isNotEmpty(yamlArtifactId)) {
+            configurator.setArtifactId(yamlArtifactId);
+        }
+        if (StringUtils.isNotEmpty(yamlVersion)) {
+            configurator.setArtifactVersion(yamlVersion);
+        }
+        if (StringUtils.isNotEmpty(yamlGroupId)) {
+            configurator.setApiPackage(yamlGroupId + ".api");
+        }
+        if (StringUtils.isNotEmpty(yamlGroupId)) {
+            configurator.setModelPackage(yamlGroupId + ".model");
+        }
+        if (StringUtils.isNotEmpty(yamlGroupId)) {
+            configurator.setInvokerPackage(yamlGroupId);
         }
 
         if (ignoreImportMappings != null) {
