@@ -1,5 +1,8 @@
 package io.swagger.codegen.languages;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.codegen.CliOption;
 import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.CodegenConstants;
@@ -12,13 +15,7 @@ import io.swagger.codegen.SupportingFile;
 import io.swagger.models.properties.*;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.HashSet;
+import java.util.*;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +37,7 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
     protected String composerProjectName = null;
     protected String packagePath = "SwaggerClient-php";
     protected String artifactVersion = null;
-    protected String srcBasePath = "lib";
+    protected String srcBasePath = "src";
     protected String testBasePath = "test";
     protected String docsBasePath = "docs";
     protected String apiDirName = "Api";
@@ -213,6 +210,8 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
     public void processOpts() {
         super.processOpts();
 
+        packagePath = (String) additionalProperties.get(CodegenConstants.ARTIFACT_ID);
+
         if (additionalProperties.containsKey(PACKAGE_PATH)) {
             this.setPackagePath((String) additionalProperties.get(PACKAGE_PATH));
         } else {
@@ -226,24 +225,28 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
         }
 
         if (additionalProperties.containsKey(CodegenConstants.INVOKER_PACKAGE)) {
-            this.setInvokerPackage((String) additionalProperties.get(CodegenConstants.INVOKER_PACKAGE));
+            //this.setInvokerPackage((String) additionalProperties.get(CodegenConstants.INVOKER_PACKAGE));
+            String tmpInvokerPackage = parseInvokerPackage((String) additionalProperties.get(CodegenConstants.INVOKER_PACKAGE));
+            this.setInvokerPackage(tmpInvokerPackage);
 
             // Update the invokerPackage for the default apiPackage and modelPackage
-            apiPackage = invokerPackage + "\\" + apiDirName;
-            modelPackage = invokerPackage + "\\" + modelDirName;
+            apiPackage = tmpInvokerPackage + "\\" + apiDirName;
+            modelPackage = tmpInvokerPackage + "\\" + modelDirName;
+
+            additionalProperties.put(CodegenConstants.INVOKER_PACKAGE, tmpInvokerPackage);
         } else {
             additionalProperties.put(CodegenConstants.INVOKER_PACKAGE, invokerPackage);
         }
 
         if (additionalProperties.containsKey(CodegenConstants.MODEL_PACKAGE)) {
             // Update model package to contain the specified model package name and the invoker package
-            modelPackage = invokerPackage + "\\" + (String) additionalProperties.get(CodegenConstants.MODEL_PACKAGE);
+            //modelPackage = invokerPackage + "\\" + (String) additionalProperties.get(CodegenConstants.MODEL_PACKAGE);
         }
         additionalProperties.put(CodegenConstants.MODEL_PACKAGE, modelPackage);
 
         if (additionalProperties.containsKey(CodegenConstants.API_PACKAGE)) {
             // Update model package to contain the specified model package name and the invoker package
-            apiPackage = invokerPackage + "\\" + (String) additionalProperties.get(CodegenConstants.API_PACKAGE);
+            //apiPackage = invokerPackage + "\\" + (String) additionalProperties.get(CodegenConstants.API_PACKAGE);
         }
         additionalProperties.put(CodegenConstants.API_PACKAGE, apiPackage);
 
@@ -255,6 +258,8 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
 
         if (additionalProperties.containsKey(CodegenConstants.GIT_USER_ID)) {
             this.setGitUserId((String) additionalProperties.get(CodegenConstants.GIT_USER_ID));
+
+            additionalProperties.put(CodegenConstants.GIT_USER_ID, (String) additionalProperties.get(CodegenConstants.GROUP_ID));
         } else {
             additionalProperties.put(CodegenConstants.GIT_USER_ID, gitUserId);
         }
@@ -267,12 +272,17 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
 
         if (additionalProperties.containsKey(CodegenConstants.GIT_REPO_ID)) {
             this.setGitRepoId((String) additionalProperties.get(CodegenConstants.GIT_REPO_ID));
+
+            additionalProperties.put(CodegenConstants.GIT_REPO_ID, (String) additionalProperties.get(CodegenConstants.ARTIFACT_ID));
         } else {
             additionalProperties.put(CodegenConstants.GIT_REPO_ID, gitRepoId);
         }
 
         if (additionalProperties.containsKey(CodegenConstants.ARTIFACT_VERSION)) {
-            this.setArtifactVersion((String) additionalProperties.get(CodegenConstants.ARTIFACT_VERSION));
+            String tmpArtifactVersion = parseArtifactVersion((String) additionalProperties.get(CodegenConstants.ARTIFACT_VERSION));
+            this.setArtifactVersion(tmpArtifactVersion);
+
+            additionalProperties.put(CodegenConstants.ARTIFACT_VERSION, tmpArtifactVersion);
         } else {
             additionalProperties.put(CodegenConstants.ARTIFACT_VERSION, artifactVersion);
         }
@@ -412,6 +422,9 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
     }
 
     public void setArtifactVersion(String artifactVersion) {
+        artifactVersion = artifactVersion.replace("SNAPSHOT", "");
+        artifactVersion = artifactVersion.replace("RELEASE", "");
+        artifactVersion = artifactVersion + "-beta" + "." + DateUtil.format(new Date(), "yyyyMMddHHmmss");
         this.artifactVersion = artifactVersion;
     }
 
@@ -735,4 +748,31 @@ public class PhpClientCodegen extends DefaultCodegen implements CodegenConfig {
         return input.replace("*/", "*_/").replace("/*", "/_*");
     }
 
+    public static void main(String[] args) {
+        String a = "com.lenovo.pet.service";
+        String[] aaArr = a.split("\\.");
+        String c = "";
+        for (String tmpStr : aaArr) {
+            c += StrUtil.upperFirst(tmpStr) + "\\";
+        }
+        String b = a.replace(".", "\\");
+        System.out.println(b);
+    }
+
+    private String parseInvokerPackage(String invokerPackage) {
+        String[] invokerPackageArr = invokerPackage.split("\\.");
+        String resultStr = "";
+        for (String tmpStr : invokerPackageArr) {
+            resultStr += StrUtil.upperFirst(tmpStr) + "\\";
+        }
+
+        return resultStr.substring(0, resultStr.length() - 1);
+    }
+
+    private String parseArtifactVersion(String artifactVersion) {
+        artifactVersion = artifactVersion.replace("-SNAPSHOT", "");
+        artifactVersion = artifactVersion.replace("-RELEASE", "");
+        artifactVersion = artifactVersion + "-beta" + "." + DateUtil.format(new Date(), "yyyyMMddHHmmss");
+        return artifactVersion;
+    }
 }
