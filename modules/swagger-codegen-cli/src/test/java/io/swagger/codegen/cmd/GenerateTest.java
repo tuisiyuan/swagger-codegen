@@ -47,7 +47,7 @@ public class GenerateTest {
 
     @Test
     public void testRequiredArgs_ShortArgs() throws Exception {
-        setupAndRunTest("-i", "swagger.yaml", "-l", "java", "-o", "src/main/java", false, null);
+        setupAndRunTest("-i", "petStore.yaml", "-l", "java", "-o", "src/main/java", false, null);
         new FullVerifications() {
             {
             }
@@ -56,7 +56,7 @@ public class GenerateTest {
 
     @Test
     public void testRequiredArgs_LongArgs() throws Exception {
-        setupAndRunTest("--input-spec", "swagger.yaml", "--lang", "java", "--output",
+        setupAndRunTest("--input-spec", "petStore.yaml", "--lang", "java", "--output",
                 "src/main/java", false, null);
         new FullVerifications() {
             {
@@ -553,7 +553,13 @@ public class GenerateTest {
     }
 
     private void setupAndRunGenericTest(String... additionalParameters) {
-        setupAndRunTest("-i", "swagger.yaml", "-l", "java", "-o", "src/main/java", false, null,
+        setupAndRunTest("-i", "petStore.yaml", "-l", "java", "-o", "src/main/java", false, null,
                 additionalParameters);
+    }
+
+    @Test
+    public void test001() {
+        Generate generate = new Generate();
+        generate.run();
     }
 }

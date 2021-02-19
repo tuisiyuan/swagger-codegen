@@ -1,5 +1,6 @@
 package io.swagger.codegen.config;
 
+import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import io.swagger.codegen.CliOption;
@@ -16,6 +17,7 @@ import io.swagger.util.Json;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -435,6 +437,30 @@ public class CodegenConfigurator implements Serializable {
         final List<AuthorizationValue> authorizationValues = AuthParser.parse(auth);
 
         Swagger swagger = new SwaggerParser().read(inputSpec, authorizationValues, true);
+
+        Map<String, Object> vendorExtensions = swagger.getInfo().getVendorExtensions();
+        LOGGER.info("vendorExtensionsvendorExtensionsvendorExtensions {}", JSONUtil.toJsonStr(vendorExtensions));
+        LOGGER.debug("vendorExtensionsvendorExtensionsvendorExtensions {}", JSONUtil.toJsonStr(vendorExtensions));
+        LOGGER.warn("vendorExtensionsvendorExtensionsvendorExtensions {}", JSONUtil.toJsonStr(vendorExtensions));
+        LOGGER.trace("vendorExtensionsvendorExtensionsvendorExtensions {}", JSONUtil.toJsonStr(vendorExtensions));
+        LOGGER.error("vendorExtensionsvendorExtensionsvendorExtensions {}", JSONUtil.toJsonStr(vendorExtensions));
+
+        if (vendorExtensions != null && !vendorExtensions.isEmpty()) {
+            Object groupIdExt = vendorExtensions.get("groupId");
+            Object artifactIdExt = vendorExtensions.get("artifactId");
+
+            if (groupIdExt != null && artifactIdExt != null) {
+                String groupIdStr = groupIdExt.toString();
+                String artifactIdStr = artifactIdExt.toString();
+
+                checkAndSetAdditionalProperty(groupIdStr + ".api", CodegenConstants.API_PACKAGE);
+                checkAndSetAdditionalProperty(groupIdStr + ".model", CodegenConstants.MODEL_PACKAGE);
+                checkAndSetAdditionalProperty(groupIdStr, CodegenConstants.INVOKER_PACKAGE);
+                checkAndSetAdditionalProperty(groupIdStr, CodegenConstants.GROUP_ID);
+                checkAndSetAdditionalProperty(artifactIdStr, CodegenConstants.ARTIFACT_ID);
+                checkAndSetAdditionalProperty(swagger.getInfo().getVersion(), CodegenConstants.ARTIFACT_VERSION);
+            }
+        }
 
         input.opts(new ClientOpts())
                 .swagger(swagger);

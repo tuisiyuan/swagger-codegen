@@ -71,14 +71,14 @@ class Configuration
      *
      * @var string
      */
-    protected $host = '{{basePath}}';
+    protected $host = '{{host}}';
 
     /**
      * User agent of the HTTP request, set to "PHP-Swagger" by default
      *
      * @var string
      */
-    protected $userAgent = '{{#httpUserAgent}}{{{.}}}{{/httpUserAgent}}{{^httpUserAgent}}Swagger-Codegen/{{#artifactVersion}}{{{.}}}{{/artifactVersion}}{{^artifactVersion}}1.0.0{{/artifactVersion}}/php{{/httpUserAgent}}';
+    protected $userAgent = 'PHP/{{gitUserId}}/{{gitRepoId}}-codegen@{{artifactVersion}}';
 
     /**
      * Debug switch (default set to false)

@@ -1,5 +1,5 @@
 {
-    "name": "{{#composerVendorName}}{{.}}{{/composerVendorName}}{{^composerVendorName}}{{gitUserId}}{{/composerVendorName}}/{{#composerProjectName}}{{.}}{{/composerProjectName}}{{^composerProjectName}}{{gitRepoId}}{{/composerProjectName}}",
+    "name": "{{gitUserId}}/{{gitRepoId}}-codegen",
     {{#artifactVersion}}
     "version": "{{artifactVersion}}",
     {{/artifactVersion}}
@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5",
+        "php": ">=7.0",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",

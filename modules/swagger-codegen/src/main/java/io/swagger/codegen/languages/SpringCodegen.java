@@ -44,7 +44,7 @@ public class SpringCodegen extends AbstractJavaCodegen
     protected boolean delegatePattern = false;
     protected boolean delegateMethod = false;
     protected boolean singleContentTypes = false;
-    protected boolean java8 = false;
+    protected boolean java8 = true;
     protected boolean async = false;
     protected String responseWrapper = "";
     protected boolean useTags = false;
@@ -52,7 +52,7 @@ public class SpringCodegen extends AbstractJavaCodegen
     protected boolean implicitHeaders = false;
     protected boolean swaggerDocketConfig = false;
     protected boolean useOptional = false;
-    protected boolean openFeign = false;
+    protected boolean openFeign = true;
     protected boolean defaultInterfaces = true;
     private boolean notNullJacksonAnnotation;
 
@@ -262,10 +262,10 @@ public class SpringCodegen extends AbstractJavaCodegen
                         ("src.main.resources").replace(".", java.io.File.separator), "swagger.properties"));
             }
             if (library.equals(SPRING_CLOUD_LIBRARY)) {
-                supportingFiles.add(new SupportingFile("apiKeyRequestInterceptor.mustache",
-                        (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "ApiKeyRequestInterceptor.java"));
-                supportingFiles.add(new SupportingFile("clientConfiguration.mustache",
-                        (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "ClientConfiguration.java"));
+//                supportingFiles.add(new SupportingFile("apiKeyRequestInterceptor.mustache",
+//                        (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "ApiKeyRequestInterceptor.java"));
+//                supportingFiles.add(new SupportingFile("clientConfiguration.mustache",
+//                        (sourceFolder + File.separator + configPackage).replace(".", java.io.File.separator), "ClientConfiguration.java"));
                 apiTemplateFiles.put("apiClient.mustache", "Client.java");
                 if (!additionalProperties.containsKey(SINGLE_CONTENT_TYPES)) {
                     additionalProperties.put(SINGLE_CONTENT_TYPES, "true");

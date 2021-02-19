@@ -1,5 +1,6 @@
 package io.swagger.codegen;
 
+import cn.hutool.json.JSONUtil;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import io.swagger.codegen.ignore.CodegenIgnoreProcessor;
@@ -770,6 +771,8 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
 
         // resolve inline models
         InlineModelResolver inlineModelResolver = new InlineModelResolver();
+
+        //处理 配置文件spec中 paths 和 definitions
         inlineModelResolver.flatten(swagger);
 
         List<File> files = new ArrayList<File>();
